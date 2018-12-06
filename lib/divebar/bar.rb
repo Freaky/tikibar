@@ -37,7 +37,6 @@ module Divebar
       @steps = (chars.size - 2) * width
       @intermediates = chars[1..-2] if chars.size > 2
       @barcache = Array.new(@steps)
-      precache
     end
 
     # Return the rendered progress bar for this step
@@ -67,7 +66,6 @@ module Divebar
       Integer(width).tap do |w|
         @width = w
         @barcache.clear
-        precache
       end
     end
 
@@ -84,10 +82,6 @@ module Divebar
     end
 
     private
-
-    def precache
-      all?
-    end
 
     def render_step(pos)
       pct = pos / @steps.to_f
