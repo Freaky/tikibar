@@ -29,14 +29,13 @@ module Tikibar
     def initialize(width: 30, chars: "-~+=#")
       chars = chars.chars if chars.is_a?(String)
       raise ArgumentError, "must specify at least two chars" if chars.size < 2
-      chars = [chars.first] + chars if chars.size < 3
 
       @width = Integer(width)
       @chars = chars
       @bgchar = chars.first
       @fillchar = chars.last
-      @steps = (chars.size - 2) * width
-      @intermediates = chars[1..-2] if chars.size > 2
+      @steps = (chars.size - 2).clamp(1, chars.size) * width
+      @intermediates = chars[1..-2]
       @barcache = Array.new(@steps)
     end
 
@@ -82,13 +81,23 @@ module Tikibar
       end
     end
 
+    def ==(other)
+      other.is_a?(Bar) && other.width == width && other.chars == chars
+    end
+
+    alias :eql? ==
+
+    def hash
+      self.class.hash ^ width.hash ^ chars.hash
+    end
+
     private
 
     def render_step(pos)
       pct = pos / @steps.to_f
       fill = (width * pct).to_i
       bar = @fillchar * fill
-      if @intermediates && fill < width
+      if !@intermediates.empty? && fill < width
         bar << @intermediates.fetch(pos % @intermediates.size)
       end
       bar.ljust(width, @bgchar).freeze

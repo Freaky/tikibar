@@ -1,29 +1,27 @@
+# frozen_string_literal: true
+
 require "tikibar/version"
 require "tikibar/bar"
-require 'tikibar/spinner'
+require "tikibar/spinner"
 
 module Tikibar
   Style = Struct.new(:name, :tick_chars, :progress_chars, :template)
 
   module Styles
     module Spinners
-      Classic = Spinner.new("\\|/-")
+      Default = Spinner.new("\\|/-")
       Bubble  = Spinner.new(".oO*")
       Braille = Spinner.new("⠁⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠠⠠⠤⠦⠖⠒⠐⠐⠒⠓⠋⠉⠈⠈")
-
-      Default = Classic
     end
 
     module Bars
-      Plain    = Bar.new(chars: "-~+=#")
+      Default  = Bar.new(chars: "-~+=#")
       Fill     = Bar.new(chars: "░█")
       Fine     = Bar.new(chars: "  ▏▎▍▌▋▊▉█")
       Rough    = Bar.new(chars: " █")
       Fade     = Bar.new(chars: " ░▒▓█")
       Vertical = Bar.new(chars: " ▁▂▃▄▅▆▇█")
       Block    = Bar.new(chars: " ▖▌▛█")
-
-      Default = Plain
     end
 
     module Templates
@@ -34,6 +32,9 @@ module Tikibar
   class Progress
     attr_reader :bar
     attr_reader :spinner
+    attr_accessor :pos
+    attr_accessor :message
+    alias msg= message=
 
     def initialize(
       len: nil,
@@ -49,18 +50,9 @@ module Tikibar
       @bar = bar.with_width(width)
       @spinner = spinner
       @template = template
-      @renderproxy = Hash.new { |h,k| render_key(k) }
+      @message = ""
+      @renderproxy = Hash.new { |_, k| render_key(k) }
     end
-
-    def pos=(pos)
-      @pos = pos
-    end
-
-    def message=(msg)
-      @msg = msg
-    end
-
-    alias msg= message=
 
     def finished?
       @pos == @len
@@ -71,9 +63,9 @@ module Tikibar
       format(@template, @renderproxy)
     end
 
-    def render_key(k)
-      case k
-      when :msg then @msg.to_s
+    def render_key(key)
+      case key
+      when :msg then @message
       when :spinner then render_spinner
       when :bar then render_bar
       when :pos then @pos
@@ -96,6 +88,7 @@ module Tikibar
     def fraction
       return 0.0 if @pos.zero?
       return 1.0 if @len.zero?
+
       (@pos / @len.to_f)
     end
   end
