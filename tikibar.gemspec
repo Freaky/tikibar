@@ -1,11 +1,11 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "divebar/version"
+require "tikibar/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "divebar"
-  spec.version       = Divebar::VERSION
+  spec.name          = "tikibar"
+  spec.version       = Tikibar::VERSION
   spec.authors       = ["Thomas Hurst"]
   spec.email         = ["tom@hur.st"]
 

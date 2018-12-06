@@ -1,6 +1,8 @@
-# require "divebar/version"
+require "tikibar/version"
+require "tikibar/bar"
+require 'tikibar/spinner'
 
-module Divebar
+module Tikibar
   Style = Struct.new(:name, :tick_chars, :progress_chars, :template)
   module Styles
     Default = Style.new(
@@ -167,8 +169,8 @@ messages = {
   256 => "Yay!"
 }
 
-bars = Divebar::Styles.constants.map do |c|
-	Divebar::Progress.new(len: 256, style: Divebar::Styles.const_get(c))
+bars = Tikibar::Styles.constants.map do |c|
+  Tikibar::Progress.new(len: 256, style: Tikibar::Styles.const_get(c))
 end
 
 CURSOR_UP = "\033[A"

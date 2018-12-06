@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Divebar
+module Tikibar
   # A caching progress bar renderer.
   class Bar
     include Enumerable

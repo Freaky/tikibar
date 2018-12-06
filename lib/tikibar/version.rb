@@ -1,3 +1,3 @@
-module Divebar
+module Tikibar
   VERSION = "0.1.0"
 end

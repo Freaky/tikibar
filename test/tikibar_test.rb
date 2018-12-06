@@ -1,8 +1,8 @@
 require "test_helper"
 
-class DivebarTest < Minitest::Test
+class TikibarTest < Minitest::Test
   def test_that_it_has_a_version_number
-    refute_nil ::Divebar::VERSION
+    refute_nil ::Tikibar::VERSION
   end
 
   def test_it_does_something_useful
