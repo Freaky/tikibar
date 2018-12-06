@@ -4,88 +4,51 @@ require 'tikibar/spinner'
 
 module Tikibar
   Style = Struct.new(:name, :tick_chars, :progress_chars, :template)
+
   module Styles
-    Default = Style.new(
-      "default",
-      "⠁⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠠⠠⠤⠦⠖⠒⠐⠐⠒⠓⠋⠉⠈⠈ ".chars,
-      "█░".chars,
-      " %<bar>s %<spinner>s %<pos>d/%<len>d %<msg>s"
-    )
+    module Spinners
+      Classic = Spinner.new("\\|/-")
+      Bubble  = Spinner.new(".oO*")
+      Braille = Spinner.new("⠁⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠠⠠⠤⠦⠖⠒⠐⠐⠒⠓⠋⠉⠈⠈")
 
-    Plain = Style.new(
-      "plain",
-      ".:oO* ".chars,
-      "#=+~-".chars,
-      " %<bar>s %<spinner>s %<pos>d/%<len>d %<msg>s"
-    )
-
-    Fancy = Style.new(
-      "fancy",
-      "⠁⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠠⠠⠤⠦⠖⠒⠐⠐⠒⠓⠋⠉⠈⠈ ".chars,
-      "█▇▆▅▄▃▂▁  ".chars,
-      " %<bar>s %<spinner>s %<pos>d/%<len>d %<msg>s"
-    )
-
-    Rough = Style.new(
-      "rough",
-      "⠁⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠠⠠⠤⠦⠖⠒⠐⠐⠒⠓⠋⠉⠈⠈ ".chars,
-      "█  ".chars,
-      " %<bar>s %<spinner>s %<pos>d/%<len>d %<msg>s"
-    )
-
-    Fine = Style.new(
-      "fine",
-      "⠁⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠠⠠⠤⠦⠖⠒⠐⠐⠒⠓⠋⠉⠈⠈ ".chars,
-      "█▉▊▋▌▍▎▏  ".chars,
-      " %<bar>s %<spinner>s %<pos>d/%<len>d %<msg>s"
-    )
-
-    Vertical = Style.new(
-      "vertical",
-      "⠁⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠠⠠⠤⠦⠖⠒⠐⠐⠒⠓⠋⠉⠈⠈ ".chars,
-      "█▇▆▅▄▃▂▁  ".chars,
-      " %<bar>s %<spinner>s %<pos>d/%<len>d %<msg>s"
-    )
-
-    Fade = Style.new(
-      "fade",
-      "⠁⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠠⠠⠤⠦⠖⠒⠐⠐⠒⠓⠋⠉⠈⠈ ".chars,
-      "█▓▒░  ".chars,
-      " %<bar>s %<spinner>s %<pos>d/%<len>d %<msg>s"
-    )
-
-    Block = Style.new(
-      "block",
-      "⠁⠁⠉⠙⠚⠒⠂⠂⠒⠲⠴⠤⠄⠄⠤⠠⠠⠤⠦⠖⠒⠐⠐⠒⠓⠋⠉⠈⠈ ".chars,
-      "█▛▌▖  ".chars,
-      " %<bar>s %<spinner>s %<pos>d/%<len>d %<msg>s"
-    )
-  end
-
-  class Renderer
-    def initialize(out = STDERR)
-      @lines = []
-      @out = out
-      @last_written = 0
+      Default = Classic
     end
 
-    def <<(text)
-      @buf << text
+    module Bars
+      Plain    = Bar.new(chars: "-~+=#")
+      Fill     = Bar.new(chars: "░█")
+      Fine     = Bar.new(chars: "  ▏▎▍▌▋▊▉█")
+      Rough    = Bar.new(chars: " █")
+      Fade     = Bar.new(chars: " ░▒▓█")
+      Vertical = Bar.new(chars: " ▁▂▃▄▅▆▇█")
+      Block    = Bar.new(chars: " ▖▌▛█")
+
+      Default = Plain
     end
 
-    def flush
+    module Templates
+      Default = " %<bar>s %<spinner>s %<pos>d/%<len>d %<msg>s"
     end
   end
 
   class Progress
-    attr_reader :style
+    attr_reader :bar
+    attr_reader :spinner
 
-    def initialize(len: nil, width: 30, style: Styles::Plain)
+    def initialize(
+      len: nil,
+      width: 30,
+      bar: Styles::Bars::Default,
+      spinner: Styles::Spinners::Default,
+      template: Styles::Templates::Default
+    )
+      @width = Integer(width)
       @len = len
       @pos = 0
       @tick = 0
-      @style = style
-      @width = Integer(width)
+      @bar = bar.with_width(width)
+      @spinner = spinner
+      @template = template
       @renderproxy = Hash.new { |h,k| render_key(k) }
     end
 
@@ -105,7 +68,7 @@ module Tikibar
 
     def render
       @tick += 1
-      format(@style.template, @renderproxy)
+      format(@template, @renderproxy)
     end
 
     def render_key(k)
@@ -120,33 +83,14 @@ module Tikibar
 
     def render_spinner
       if finished?
-        @style.tick_chars.last
+        spinner.finish
       else
-        @style.tick_chars[@tick % (@style.tick_chars.size - 1)]
+        spinner[@tick]
       end
     end
 
     def render_bar
-      width = @width
-      pct = fraction
-      fill = pct * width
-      bg = width - fill.to_i
-
-      bar = @style.progress_chars[0] * fill.to_i
-
-      if pct.nonzero? && bg.nonzero?
-        n = (@style.progress_chars.length - 2).clamp(0, width)
-        cur_char = if n.zero?
-          1
-        else
-          (n - (fill * n.to_f).to_i % n)
-        end
-        bar << @style.progress_chars[cur_char]
-        bg -= 1
-      end
-
-      bar << @style.progress_chars.last * bg
-      bar
+      bar[(fraction * bar.steps).to_i]
     end
 
     def fraction
@@ -154,9 +98,6 @@ module Tikibar
       return 1.0 if @len.zero?
       (@pos / @len.to_f)
     end
-  end
-
-  class MultiProgress
   end
 end
 
@@ -169,8 +110,8 @@ messages = {
   256 => "Yay!"
 }
 
-bars = Tikibar::Styles.constants.map do |c|
-  Tikibar::Progress.new(len: 256, style: Tikibar::Styles.const_get(c))
+bars = Tikibar::Styles::Bars.constants.map do |c|
+  Tikibar::Progress.new(len: 256, bar: Tikibar::Styles::Bars.const_get(c))
 end
 
 CURSOR_UP = "\033[A"
@@ -184,7 +125,7 @@ buffer = StringIO.new
   buffer.print(CURSOR_UP * bars.size) if pos.nonzero?
   bars.each do |b|
     b.pos = pos
-    b.message = "(#{b.style.name}) #{messages[pos]}" if messages.key?(pos)
+    b.message = messages[pos] if messages.key?(pos)
     buffer.puts "#{CURSOR_LEFTMOST}#{b.render}#{CLEAR_TO_EOL}"
   end
   STDERR.write(buffer.string)

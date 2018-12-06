@@ -11,6 +11,9 @@ module Tikibar
     # The set of states this spinner can be in
     attr_reader :states
 
+    # The last state of the spinner
+    attr_reader :finish
+
     # The character width of this spinner
     attr_reader :width
 
@@ -21,21 +24,23 @@ module Tikibar
     # A String of single characters is also supported.
     #
     # @param states [String, Array<String>] an array of spinner states
+    # @param finish [String] An optional ending state for the spinner
     # @return [Spinner]
-    def initialize(states = ".:oO*")
+    def initialize(states = ".:oO*", finish = "")
       states = states.chars if states.is_a?(String)
       raise ArgumentError, "must specify at least two states" if states.size < 2
 
-      @width = states.max(&:size)
-      @states = states.map { |state| state.ljust(@width, ' ').freeze }
+      @width = states.map(&:size).max
+      @finish = finish.ljust(@width).freeze
+      @states = states.map { |state| state.ljust(@width).freeze }
     end
 
     # Return the given spinner state.
     #
-    # @param pos [Integer] the current render position, 0..size
+    # @param pos [Integer] a wrapping state number for the spinner
     # @return [String] frozen representation of the bar
     def [](pos)
-      @states[pos]
+      states[pos % states.size]
     end
 
     # Iterate over each state of the bar

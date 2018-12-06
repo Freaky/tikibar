@@ -21,7 +21,7 @@ module Tikibar
     # Create a bar renderer taking up +width+ characters, rendering the bar
     # using a list of +chars+ characters that starts with a background
     # character, zero or more intermediate characters from low to high, followed
-    # by the fill character.
+    # by the filled bar character.
     #
     # @param width [Integer] character width of the bar
     # @param chars [String, Array<String>] a list of characters
@@ -29,6 +29,7 @@ module Tikibar
     def initialize(width: 30, chars: "-~+=#")
       chars = chars.chars if chars.is_a?(String)
       raise ArgumentError, "must specify at least two chars" if chars.size < 2
+      chars = [chars.first] + chars if chars.size < 3
 
       @width = Integer(width)
       @chars = chars
