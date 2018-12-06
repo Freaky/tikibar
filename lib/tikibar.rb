@@ -17,11 +17,11 @@ module Tikibar
     module Bars
       Default  = Bar.new(chars: "-~+=#")
       Fill     = Bar.new(chars: "░█")
-      Fine     = Bar.new(chars: "  ▏▎▍▌▋▊▉█")
+      Fine     = Bar.new(chars: "   ▏▎▍▌▋▊▉█")
       Rough    = Bar.new(chars: " █")
-      Fade     = Bar.new(chars: " ░▒▓█")
-      Vertical = Bar.new(chars: " ▁▂▃▄▅▆▇█")
-      Block    = Bar.new(chars: " ▖▌▛█")
+      Fade     = Bar.new(chars: "  ░▒▓█")
+      Vertical = Bar.new(chars: "  ▁▂▃▄▅▆▇█")
+      Block    = Bar.new(chars: "  ▖▌▛█")
     end
 
     module Templates
@@ -110,7 +110,7 @@ end
 CURSOR_UP = "\033[A"
 CLEAR_LINE = "\33[2K"
 CURSOR_LEFTMOST = "\r"
-CLEAR_TO_EOL = "\33K"
+CLEAR_TO_EOL = "\33[K"
 
 buffer = StringIO.new
 
