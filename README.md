@@ -70,6 +70,8 @@ Ten down...
     Bleep blopn ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 23/256
 ```
 
+Recording: [![asciicast](https://asciinema.org/a/SIPB4sJT4TJsohvlBOpzqd8UQ.svg)](https://asciinema.org/a/SIPB4sJT4TJsohvlBOpzqd8UQ)
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
