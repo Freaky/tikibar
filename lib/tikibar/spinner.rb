@@ -26,13 +26,13 @@ module Tikibar
     # @param states [String, Array<String>] an array of spinner states
     # @param finish [String] An optional ending state for the spinner
     # @return [Spinner]
-    def initialize(states = ".:oO*", finish = "")
+    def initialize(states = ".:oO*", finish = "", reverse: false)
       states = states.chars if states.is_a?(String)
-      raise ArgumentError, "must specify at least two states" if states.size < 2
+      states += states.reverse.drop(1) if reverse
 
       @width = states.map(&:size).max
       @finish = finish.ljust(@width).freeze
-      @states = states.map { |state| state.ljust(@width).freeze }
+      @states = states.map { |state| state.ljust(@width).freeze }.freeze
     end
 
     # Return the given spinner state.

@@ -1,0 +1,5 @@
+Metrics/AbcSize:
+  Max: 19
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
