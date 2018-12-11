@@ -70,7 +70,7 @@ Ten down...
     Bleep blopn ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 23/256
 ```
 
-Recording: [![asciicast](https://asciinema.org/a/SIPB4sJT4TJsohvlBOpzqd8UQ.svg)](https://asciinema.org/a/SIPB4sJT4TJsohvlBOpzqd8UQ)
+Recording: [![asciicast](https://asciinema.org/a/21ismS9Lh8FBCVtQjEavrUnq3.svg)](https://asciinema.org/a/21ismS9Lh8FBCVtQjEavrUnq3)
 
 ## License
 
