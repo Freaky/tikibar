@@ -1,11 +1,5 @@
-# Tikibar
+#!/usr/bin/env ruby
 
-Prototype for a new Ruby progress bar library, taking inspiration from Rust's
-[indicatif](https://github.com/mitsuhiko/indicatif) crate.
-
-## Synopsis
-
-```ruby
 require "tikibar"
 
 # One of the many styles we might use.  Can also make custom ones.
@@ -55,18 +49,3 @@ out.finish
 
 # And we're back to normal rendering
 puts "\\o/"
-```
-
-Output:
-
-```
--% bundle exec examples/tiki.rb
-Processing array...
-Ten down...
-█████░░░░░░░░░░░░░░░░░░░░░░░░░   3s  18% Item 18 contains 164
-    Bleep blopn ██░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 23/256
-```
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
