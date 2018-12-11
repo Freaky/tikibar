@@ -8,9 +8,9 @@ bar = Tikibar::Styles::Bars::Fill
 # Create a rendering thread all our output should go through
 out = Tikibar::Display.new
 
-# A template using Kernel.format filtered through Tikibar::Ansi
-fmt = "%{bar.cyan} %<eta.dim>4s %<pct> 3d%% %{msg.green}"
 background = Thread.new do
+  # A template using Kernel.format filtered through Tikibar::Ansi
+  fmt = "%{bar.cyan} %<eta.dim>4s %<pct> 3d%% %{msg.green}"
   items = Array.new(100) { rand(1000) }
 
   # Add a bar to the output, returning a thread-safe handle to it.
@@ -20,7 +20,7 @@ background = Thread.new do
   items.each_with_index do |n, i|
     pb.pos = i
     pb.message = "Item #{i} contains #{n}"
-    out.puts "Ten down..." if i == 10
+    out.puts "Half done..." if i == 50
     sleep 0.04
   end
 
