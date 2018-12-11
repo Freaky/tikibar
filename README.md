@@ -35,7 +35,9 @@ background = Thread.new do
 end
 
 # Add another, completely different bar for another, concurrent task
-pb = out.add(Tikibar::Progress.new(len: 256, bar: bar, template: "%<prefix>15s %{bar.red} %{pos}/%{len}"))
+spinner = Tikibar::Styles::Spinners::Twirl
+fmt = "%<prefix>15s %{spinner} %{bar.red} %{pos}/%{len}"
+pb = out.add(Tikibar::Progress.new(len: 256, bar: bar, spinner: spinner, template: fmt))
 pb.prefix = "Bleep bloop"
 0.upto(256) do |i|
   pb.prefix = pb.prefix.succ
@@ -55,6 +57,7 @@ out.finish
 
 # And we're back to normal rendering
 puts "\\o/"
+
 ```
 
 Output:
