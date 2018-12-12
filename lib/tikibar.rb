@@ -16,8 +16,6 @@ require "tikibar/template"
 require "tikibar/version"
 
 module Tikibar
-  Style = Struct.new(:name, :tick_chars, :progress_chars, :template)
-
   module Styles
     module Spinners
       Default = Spinner.new("\\|/-")
